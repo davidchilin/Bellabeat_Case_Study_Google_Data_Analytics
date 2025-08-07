@@ -1,16 +1,18 @@
 # Bellabeat Case Study (Fitness Tracker)
 
-#### David Chilin
 
-#### 8/13/2021
 
-[TOC]
+Table of Contents: 
 [Introduction](#case-study-introduction)
 [Ask](#ask)
 [Prepare](#prepare)
 [Process](#process)
 [Analyze](#analyze)
 [Share & Act](#share--act-key-marketing-points)
+
+#### David Chilin
+
+#### 8/13/2021
 
 ## Introduction
 
@@ -279,11 +281,13 @@ In general all .csv files have an “Id” column which will be used as a unique
         )
 ```
 <img src="images/1.Calories_Burned_per_Hour.png" />
-    * _Consider categorizing Calories Burned per Hour into 4 levels: {0: Sedentary, 1: LightlyActive, 2: FairlyActive, 3: VeryActive}_
+
+    * Consider categorizing Calories Burned per Hour into 4 levels: {0: Sedentary, 1: LightlyActive, 2: FairlyActive, 3: VeryActive}
     * After summarizing participants from dailyActivities, select a couple from each intensity level and consider plotting weekly/monthly calorie progression, possible pattern might be inciteful. Maybe create workout track for different life/work/school/parent schedules, short high intensity workouts or long low intensity work outs - personalization will likely be marketing point.
+
 * **hourlySteps, hourlyIntensities**:
-    
-    * Consider redundant with hourlyCalories, _drop hourlySteps, hourlyIntensities_
+    * Consider redundant with hourlyCalories, _drop hourlySteps, hourlyIntensities
+
 * **sleepDay**:
 ```r
         sleepDay %>% group_by(Id) %>% count(Id, sort = TRUE) %>% print(n = 24)
