@@ -112,34 +112,32 @@ Case study approach will follow Google Data Analysis Process (using R): **Ask**,
     ##     area
 
     library(here)
-```
-```R
 
     ## here() starts at /home/user/Programs/Tutorial/Google_Data_Analytics_Certification/Case_Study/FitBit
 
     data_dir <- "Fitabase Data 4.12.16-5.12.16"
 ```
 List .csv data files available:
+```R
+# List .csv data files:
+list.files(path = here(data_dir))
 
-    # List .csv data files:
-    list.files(path = here(data_dir))
-
-    ##  [1] "dailyActivity_merged.csv"           "dailyCalories_merged.csv"          
-    ##  [3] "dailyIntensities_merged.csv"        "dailySteps_merged.csv"             
-    ##  [5] "heartrate_seconds_merged.csv"       "hourlyCalories_merged.csv"         
-    ##  [7] "hourlyIntensities_merged.csv"       "hourlySteps_merged.csv"            
-    ##  [9] "minuteCaloriesNarrow_merged.csv"    "minuteCaloriesWide_merged.csv"     
-    ## [11] "minuteIntensitiesNarrow_merged.csv" "minuteIntensitiesWide_merged.csv"  
-    ## [13] "minuteMETsNarrow_merged.csv"        "minuteSleep_merged.csv"            
-    ## [15] "minuteStepsNarrow_merged.csv"       "minuteStepsWide_merged.csv"        
-    ## [17] "sleepDay_merged.csv"                "weightLogInfo_merged.csv"
-
+##  [1] "dailyActivity_merged.csv"           "dailyCalories_merged.csv"          
+##  [3] "dailyIntensities_merged.csv"        "dailySteps_merged.csv"             
+##  [5] "heartrate_seconds_merged.csv"       "hourlyCalories_merged.csv"         
+##  [7] "hourlyIntensities_merged.csv"       "hourlySteps_merged.csv"            
+##  [9] "minuteCaloriesNarrow_merged.csv"    "minuteCaloriesWide_merged.csv"     
+## [11] "minuteIntensitiesNarrow_merged.csv" "minuteIntensitiesWide_merged.csv"  
+## [13] "minuteMETsNarrow_merged.csv"        "minuteSleep_merged.csv"            
+## [15] "minuteStepsNarrow_merged.csv"       "minuteStepsWide_merged.csv"        
+## [17] "sleepDay_merged.csv"                "weightLogInfo_merged.csv"
+```
 Considering goals, focus will be limited to hourly/daily data by skimming second/minute datasets:
-
+```r
     minuteCaloriesNarrow_merged.csv, minuteCaloriesWide_merged.csv, minuteIntensitiesNarrow_merged.csv, minuteIntensitiesWide_merged.csv, minuteMETsNarrow_merged.csv, minuteSleep_merged.csv, minuteStepsNarrow_merged.csv, minuteStepsWide_merged.csv, heartrate_seconds_merged.csv
-
+```
 Now to load .csv files of interest and explore structure of files.
-
+```r
     # Read in .csv files
     dailyActivity <- read.csv(here(data_dir,"dailyActivity_merged.csv"))
     dailyCalories <- read.csv(here(data_dir,"dailyCalories_merged.csv"))
@@ -150,9 +148,9 @@ Now to load .csv files of interest and explore structure of files.
     hourlySteps <- read.csv(here(data_dir,"hourlySteps_merged.csv"))
     sleepDay <- read.csv(here(data_dir,"sleepDay_merged.csv"))
     weightLogInfo <- read.csv(here(data_dir,"weightLogInfo_merged.csv"))
-
+```
 Preview top two rows for each .csv file.
-
+```r
     # Preview .csv files
     head(dailyActivity, 2)
 
@@ -228,7 +226,7 @@ Preview top two rows for each .csv file.
     ##   IsManualReport        LogId
     ## 1           True 1.462234e+12
     ## 2           True 1.462320e+12
-
+```
 ### Notes on .csv files and columns:
 
 In general all .csv files have an “Id” column which will be used as a unique FitBit user identifier and used to manipulate and merge datasets.
@@ -244,7 +242,7 @@ In general all .csv files have an “Id” column which will be used as a unique
     
     * Redundant data from dailyActivity, _drop dailyCalories, dailyIntensities, dailySteps_
 * **hourlyCalories**:
-    
+```r
         hourlyCalories %>%
           select(-Id) %>%
           summary()
@@ -271,15 +269,15 @@ In general all .csv files have an “Id” column which will be used as a unique
           labels = h_values$counts,
           adj = c(0.5, 0.5)
         )
-    
+```
 <img src="images/1.Calories_Burned_per_Hour.png" />
-    * _Consider categorizing Calories Burned per Hour into 4 levels: {0: Sedentary, 1: LightlyActive, 2: FairlyActive, 3: VeryActive}_
+##### * _Consider categorizing Calories Burned per Hour into 4 levels: {0: Sedentary, 1: LightlyActive, 2: FairlyActive, 3: VeryActive}_
     * After summarizing participants from dailyActivities, select a couple from each intensity level and consider plotting weekly/monthly calorie progression, possible pattern might be inciteful. Maybe create workout track for different life/work/school/parent schedules, short high intensity workouts or long low intensity work outs - personalization will likely be marketing point.
 * **hourlySteps, hourlyIntensities**:
     
     * Consider redundant with hourlyCalories, _drop hourlySteps, hourlyIntensities_
 * **sleepDay**:
-    
+```r
         sleepDay %>% group_by(Id) %>% count(Id, sort = TRUE) %>% print(n = 24)
     
         ## # A tibble: 24 × 2
@@ -314,8 +312,9 @@ In general all .csv files have an “Id” column which will be used as a unique
     * 24 distinct users, 413 observations _possibly encourage users to use functionality_
     * Consider dropping users with less than 15 observations
     * Match sleep correlation with daily/weekly workout, likely marketing point. (correlate day of or day after workout?)
+```
 * **weightLogInfo**:
-    
+```r 
         weightLogInfo %>%
           group_by(Id) %>%
           count(Id)
@@ -335,9 +334,9 @@ In general all .csv files have an “Id” column which will be used as a unique
     
     * 8 distinct users, 67 total observations, only 2 users consistently tracked weight.
     * _Drop weightLogInfo due to limited number of users and observations, possibly encourage users to use functionality._
-
+```
 Prior to dropping .csv and columns will create a dataframe of feature usage by % user participation and by % observations completed (100% is 33 users over 31 days).
-
+```r
     monthSec <- 33*31*24*60*60
     monthDay <- 33*31
     
@@ -380,7 +379,7 @@ Prior to dropping .csv and columns will create a dataframe of feature usage by %
     
     rm(dailyCalories, dailyIntensities, dailySteps)
     rm(hourlyIntensities, hourlySteps, weightLogInfo)
-
+```
 * * *
 
 ## Process:
@@ -388,7 +387,7 @@ Prior to dropping .csv and columns will create a dataframe of feature usage by %
 Will process data for easier analysis and visualization by combining datasets, renaming/removing columns.
 
 Some users in sleepDay have less than 15 observations and will be dropped.
-
+```r
     # sleepDay: Dropping users with less than 15 observations
     dropId <- sleepDay %>%
       select(Id) %>%
@@ -402,11 +401,11 @@ Some users in sleepDay have less than 15 observations and will be dropped.
     ## [8] 7007744171 8053475328
 
     sleepDay <- filter(sleepDay, !(Id %in% dropId$Id))
-
+```
 Nine users were dropped from sleepDay with a total of 24 users with a minimum of 15 days of observations.
 
 User(s) with less than 15 observations in dailyActivity will be dropped.
-
+```r
     # dailyActivity: Dropping users with less than 15 days of observations
     dropId <- dailyActivity %>%
       select(Id) %>%
@@ -419,11 +418,11 @@ User(s) with less than 15 observations in dailyActivity will be dropped.
     ## [1] 4057192912
 
     dailyActivity <- filter(dailyActivity, !(Id %in% dropId$Id))
-
+```
 Only one user was dropped from dailyActivity with 32 users with a minimum of 18 days of observations.
 
 Categorize TotalMinutesAsleep and Calories, create RestlessBedTime, merge datasets, and drop TotalSleepRecords and TotalTimeInBed.
-
+```r
     # Create dailyMerged from sleepDay + dailyActivity
     # Separate sleepDay$SleepDay into ActivityDate and SleepTime(discard),
     # create RestlessBedTime, categorize TotalMinutesAsleep
@@ -481,9 +480,9 @@ Categorize TotalMinutesAsleep and Calories, create RestlessBedTime, merge datase
     ## [1] 4057192912
 
     hourlyCalories <- filter(hourlyCalories, !(Id %in% dropId$Id))
-
+```
 Create a correlation heatmap of merged dataset variables to highlight interesting correlations and find potential redundant variables.
-
+```r
     # ==== Create heatmap of dailyMerged, see what data is correlated
     # [source](http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization)
     
@@ -517,7 +516,7 @@ Create a correlation heatmap of merged dataset variables to highlight interestin
         barwidth = 7, barheight = 1,
         title.position = "top", title.hjust = 0.5
       ))
-
+```
 <img src="images/2.Variable_Correlations.png" />
 
 Some variables pairs are highly correlated ( >= 0.85) and will be removed to produce a simplified heatmap:
@@ -530,7 +529,7 @@ Some variables pairs are highly correlated ( >= 0.85) and will be removed to pro
     
 * FairlyActiveMinutes, _drop ModeratelyActiveDistance_,
     
-
+```r
     dailyMerged <- dailyMerged %>%
       select(
         -TotalDistance, -ModeratelyActiveDistance,
@@ -541,13 +540,13 @@ Some variables pairs are highly correlated ( >= 0.85) and will be removed to pro
         -TotalDistance, -ModeratelyActiveDistance,
         -VeryActiveDistance, -LightActiveDistance
       )
-
+```
 * * *
 
 ## Analyze:
 
 Will begin by reviewing variable correlations of merged datasets via the simplified heatmap.
-
+```r
     # ==== Re-Create heatmap using simplified dailyMerged
     cor_dataMerged <- dailyMerged %>%
       select(-Id, -ActivityDate, -SleepCat) %>%
@@ -579,7 +578,7 @@ Will begin by reviewing variable correlations of merged datasets via the simplif
         barwidth = 7, barheight = 1,
         title.position = "top", title.hjust = 0.5
       ))
-
+```
 <img src="images/3.Simplified_Variable_Correlations.png" />
 
 ### Interesting Correlation Observations:
@@ -592,7 +591,7 @@ Will begin by reviewing variable correlations of merged datasets via the simplif
 ### User Overview and Comparisons of 32 Users
 
 The next set of boxplots give an overview of user metrics in Daily Sleep Hours, Restless Bed Time, Daily Calories Burned, and Daily Steps. Users are designated Letters A-Z and Numbers 1 - 6. Missing user boxplots are from NA observations (either non-existant or dropped).
-
+```r
     # boxplot of TotalMinutesAsleep per User Id
     ggplot(dailyMerged, aes(factor(Id), TotalMinutesAsleep / 60,
       fill = factor(Id), alpha = 0.1
@@ -636,7 +635,7 @@ The next set of boxplots give an overview of user metrics in Daily Sleep Hours, 
       geom_jitter(width = 0.15, show.legend = FALSE, size = 1) +
       scale_y_continuous(expand = c(0, 0)) +
       scale_x_discrete(labels = c(LETTERS, 1:6))
-
+```
 <img src="images/4.Daily_Sleep_Hours.png" />
 <img src="images/5.Restless_Bed_Time.png" />
 <img src="images/6.Daily_Calories_Burned.png" />
@@ -645,7 +644,7 @@ The next set of boxplots give an overview of user metrics in Daily Sleep Hours, 
 Daily Sleep Hours Plot shows 15 users averaging about 7.1 hours of sleep. Restless Bed Time was pretty consistent with an average of 38 minutes, with one user (User L) as an outlier averaging 168 minutes, which coincidentally paired with the lowest average Daily Sleep Hours of 4.9 hours.
 
 The plots of Daily Calories Burned and Daily Steps do somewhat follow a similar pattern as was indicated in the correlation heatmap with a value of 0.41. Number of steps varied quite a bit with a daily average and standard deviataily SLeepion of : 7701, 5075. Ultimately, these plots were added for practice and the extra color they bring to the document.
-
+```r
 # Overloaded barchart of User Activity Minutes and Calories Burned
 meltdailyMerged <- dailyMerged %>%
   select(
@@ -683,13 +682,13 @@ meltdailyMerged %>%
     plot.subtitle = element_text(color = "blue"),
     panel.grid.major.x = element_line(color = "black", size = 0.1)
   )
-
+```
 <img src="images/8.Daily_Average_Activity.png" />
 
 This combined plot of Average Activity Minutes and Calories Burned is mostly an exercise in presenting two datasets within a single plot using a second axis. The collective Activity Minutes (not including Sedentary Activity Minutes) do seem to follow a similar trend to the values of Calories Burned.
 
 The goal of the next few time series heatmaps is to facilitate grouping of Users by activity schedules (Calories Burned) by day and hour.
-
+```r
     ggplot(dailyMerged, aes(x = ActivityDate, y = factor(Id), fill = Calories)) +
       geom_tile() +
       scale_fill_gradient2(low = "white", high = "red", mid = "blue", name = "Calories", midpoint = 2000, limit = c(0, max(dailyMerged$Calories))) +
@@ -704,9 +703,9 @@ The goal of the next few time series heatmaps is to facilitate grouping of Users
       ) +
       scale_y_discrete(labels = c(LETTERS, 1:6)) +
       labs(y = "Users", title = "Daily Calories Burned")
-
+```
 <img src="images/9.Daily_Calories_Burned.png" />
-
+```r
     dailyMerged <- dailyMerged %>%
       mutate(Id = factor(Id)) %>%
       mutate(week = factor(case_when(
@@ -743,11 +742,11 @@ The goal of the next few time series heatmaps is to facilitate grouping of Users
         name = "Calories", midpoint = 2000,
         limit = c(0, max(dailyMerged$Calories))
       )
-
+```
 <img src="images/10.User_Daily_Calories_Burned.png" />
 
 From the previous two plots, a few different pattern in users can be discerned. There are users with consistent daily calories burned and minimal spikes (Users: L, O, R), there are users with noticeable workout/burn patterns, some relax on weekends, others work out weekends or Wednesdays (Users: A, C, D, F, N, Q, T, X, 3, 6), and some users with more sporadic daily calories burned (Users: B, E, G-K, M, P, S-Z, 1, 2, 4, 5).
-
+```r
     hourlyCalories <- hourlyCalories %>% mutate(ActivityTime = hour(ActivityHour), ActivityDate = date(ActivityHour))
     
     hourlyCalories %>%
@@ -771,7 +770,7 @@ From the previous two plots, a few different pattern in users can be discerned. 
       scale_y_continuous(trans = "reverse") +
       theme(legend.position = "top") +
       theme(strip.background = element_blank())
-
+```
 <img src="images/11.Weekly_Calories_Burned.png" />
 
 From the weekly time series heatmaps, a few observations are:
@@ -782,7 +781,7 @@ From the weekly time series heatmaps, a few observations are:
     * Morning, Midday, Afternoon peaks that might correspond to movement to/from/around work
     * Active weekend users or users with Tuesday/Thursday/Saturday workouts
     * Less active users seem to have more erratic calorie burn schedules
-
+```r
     dailyMerged %>%
       select(Id, TotalMinutesAsleep, ActivityDate) %>%
       mutate(weekday = wday(ActivityDate, label = TRUE)) %>%
@@ -795,7 +794,7 @@ From the weekly time series heatmaps, a few observations are:
       scale_y_continuous(breaks = c(3, 4.5, 6, 7.5, 9, 10.5, 12)) +
       scale_x_discrete() +
       labs(y = "Hours of Sleep", title = "Daily Sleep Hours", x = "Weekday")
-
+```
 <img src="images/12.Daily_Sleep_Hours.png" />
 
 On average users sleep more hours on weekends then weekdays, and also have a bit more variability in hours slept on weekends as well.
@@ -803,7 +802,7 @@ On average users sleep more hours on weekends then weekdays, and also have a bit
 ### Clustering (for fun and learning)
 
 Lastly, a summary of user values will be analyzed using Kmeans and PCA to see how to group users and to see which are the most differentiating variables. It seems sleeptime data has a lot of NAs, so will review and see how best to handle.
-
+```r
     # Review number of NAs in sleep time data
     dailyMerged %>%
       select(Id, TotalMinutesAsleep, RestlessBedTime) %>%
@@ -846,11 +845,11 @@ Lastly, a summary of user values will be analyzed using Kmeans and PCA to see ho
     ## 30 5553957443            0              0
     ## 31 6962181067            0              0
     ## 32 8378563200            0              0
-
+```
 Regarding sleep time data, only 3 users have complete sets, about a third of users have less than 10 days missing, and about half are missing 20 or more days. There is an option to impute median/mean values to replace NAs, but will instead exclude TotalMinutesAlseep and RestlessBedTime for Kmeans/PCA. Potential option is to perform MFA that can handle NAs without dropping data and be able to classify users based on weekly schedules.
 
 The first plot below helps determines an optimal number of Kmeans groups for users.
-
+```r
     # Create a summary dataframe for Kmeans
     
     summaryMerged <- dailyMerged %>%
@@ -863,9 +862,9 @@ The first plot below helps determines an optimal number of Kmeans groups for use
       column_to_rownames("Id")
     
     summaryMerged2 <- summaryMerged
-
+```
 Before continuing with Kmeans/PCA, the data will be cleaned of NAs.
-
+```r
     # replace NAs in TotalMinutesAsleep and RestlessBedTime with mean
     # since Kmeans/PCA methods don't handle NAs
     summaryMerged <- summaryMerged[c(1:6)]
@@ -876,24 +875,24 @@ Before continuing with Kmeans/PCA, the data will be cleaned of NAs.
     
     # find good number of clusters
     fviz_nbclust(summaryMerged, kmeans, method = "wss")
-
+```
 <img src="images/13.Optimal_Clusters.png" />
 
  The data collected in TotalMinutesAsleep and RestlessBedTime has many NAs and will be excluded from Kmeans/PCAa analysis.
 
 An optimal number of clusters is around the elbow point, but the plot seems to flow smoothly, so a value of 3 or 4 seems reasonable, I will use 4 clusters.
-
+```r
     km <- kmeans(summaryMerged, centers = 4, nstart = 25)
     km$size # view population of each cluster
 
     ## [1]  8  9  4 11
 
     fviz_cluster(km, data = summaryMerged)
-
+```
 <img src="images/14.Cluster_Plot.png" />
 
 The four clusters have: 8, 9, 4, 11 users with within cluster sum of squares 61%. A summary of each cluster’s average metric values is presented in table below.
-
+```r
     options(digits = 1)
     # create table with mean values for each cluster
     summaryTable <- aggregate(summaryMerged2, by = list(cluster = km$cluster), mean, na.rm = TRUE)
@@ -909,20 +908,20 @@ The four clusters have: 8, 9, 4, 11 users with within cluster sum of squares 61%
                 formattable::area(col = 6) ~ color_tile("white", "lightblue"),
                 formattable::area(col = 7) ~ color_tile("white", "lightcyan")
                 ))
-
+```
 <img src="images/14B.Table_Cluster.png" />
 
 Based on clustering, it seems the most distinguishing metrics are TotalSteps, LightlyActiveMinutes, VeryActiveMinutes, SedentaryMinutes, and Calories.
-
+```r
     final_data <- cbind(summaryMerged2, cluster = factor(km$cluster))
     
     final_data %>% ggplot(aes(x = TotalSteps, y = LightlyActiveMinutes, color = cluster, size = VeryActiveMinutes)) +
       geom_point()
-
+```
 <img src="images/15.Activity_Minutes.png" />
 
 A second analysis will be perfomed using FactoMiner’s PCA function, and will presents user variables in slightly different ways.
-
+```r
     # Source: https://rpkgs.datanovia.com/factoextra/
     
     res.pca <- PCA(summaryMerged, graph = FALSE)
@@ -936,9 +935,9 @@ A second analysis will be perfomed using FactoMiner’s PCA function, and will p
     b <- fviz_contrib(res.pca, choice = "var", axes = 2, top = 10)
     
     a + b # plot both Contributions
-
+```
 <img src="images/16.Contribution_Variables.png" />
-
+```r
     # Extract the results for individuals
     ind <- get_pca_ind(res.pca)
     
@@ -948,7 +947,7 @@ A second analysis will be perfomed using FactoMiner’s PCA function, and will p
       gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
       repel = TRUE
     )
-
+```
 <img src="images/17.PCA_Biplot.png" />
 
 Based on PCA by weight, it seems the most distinguishing metrics are _TotalSteps, VeryActiveMinutes, LightlyActiveMinutes, Calories_, and _Sedentary Minutes_. The last plot shows the grouping of users by color overlayed with the first two PCA dimensions. As might of been expected the users were grouped by activity, falling into activity categories: _Very, Fairly, Lightly,_ and _Sedentary_. A possible good addition would be an analysis of hourlyCalories to categorize by schedule, to determine users as having school/work schedule, post-work workouts, weekend athletes/loungers, etc.
@@ -961,7 +960,7 @@ The main tasks for the case study are:
 
 * Analyze consumer product use, and advise how our products can meet user needs (functions used).
 * Analyze usage trends, and advice how our marketing/products can match with users (categorieze users).
-
+```r
     pie_label2 <- paste0(as.character(pie_data[,2]), "%")
     pie_label3 <- paste0(as.character(pie_data[,3]), "%")
     
@@ -1015,7 +1014,7 @@ The main tasks for the case study are:
         geom_text(aes(x = metric, label = pie_label3), hjust = -.5)
     
     a + b
-
+```
 <img src="images/18.Feature_Usage.png" />
 
 **_Features usage_** included in the dataset is summarized in the pie charts (33 Users at 31 days is 100%):
