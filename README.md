@@ -4,6 +4,14 @@
 
 #### 8/13/2021
 
+[TOC]
+[Introduction](#case-study-introduction)
+[Ask](#ask)
+[Prepare](#prepare)
+[Process](#process)
+[Analyze](#analyze)
+[Share & Act](#share--act-key-marketing-points)
+
 ## Introduction
 
 Welcome to my first case study as part of the **Google Data Analytics Certification program**.
@@ -119,18 +127,18 @@ Case study approach will follow Google Data Analysis Process (using R): **Ask**,
 ```
 List .csv data files available:
 ```R
-# List .csv data files:
-list.files(path = here(data_dir))
+    # List .csv data files:
+    list.files(path = here(data_dir))
 
-##  [1] "dailyActivity_merged.csv"           "dailyCalories_merged.csv"          
-##  [3] "dailyIntensities_merged.csv"        "dailySteps_merged.csv"             
-##  [5] "heartrate_seconds_merged.csv"       "hourlyCalories_merged.csv"         
-##  [7] "hourlyIntensities_merged.csv"       "hourlySteps_merged.csv"            
-##  [9] "minuteCaloriesNarrow_merged.csv"    "minuteCaloriesWide_merged.csv"     
-## [11] "minuteIntensitiesNarrow_merged.csv" "minuteIntensitiesWide_merged.csv"  
-## [13] "minuteMETsNarrow_merged.csv"        "minuteSleep_merged.csv"            
-## [15] "minuteStepsNarrow_merged.csv"       "minuteStepsWide_merged.csv"        
-## [17] "sleepDay_merged.csv"                "weightLogInfo_merged.csv"
+    ##  [1] "dailyActivity_merged.csv"           "dailyCalories_merged.csv"          
+    ##  [3] "dailyIntensities_merged.csv"        "dailySteps_merged.csv"             
+    ##  [5] "heartrate_seconds_merged.csv"       "hourlyCalories_merged.csv"         
+    ##  [7] "hourlyIntensities_merged.csv"       "hourlySteps_merged.csv"            
+    ##  [9] "minuteCaloriesNarrow_merged.csv"    "minuteCaloriesWide_merged.csv"     
+    ## [11] "minuteIntensitiesNarrow_merged.csv" "minuteIntensitiesWide_merged.csv"  
+    ## [13] "minuteMETsNarrow_merged.csv"        "minuteSleep_merged.csv"            
+    ## [15] "minuteStepsNarrow_merged.csv"       "minuteStepsWide_merged.csv"        
+    ## [17] "sleepDay_merged.csv"                "weightLogInfo_merged.csv"
 ```
 Considering goals, focus will be limited to hourly/daily data by skimming second/minute datasets:
 ```r
@@ -271,7 +279,7 @@ In general all .csv files have an “Id” column which will be used as a unique
         )
 ```
 <img src="images/1.Calories_Burned_per_Hour.png" />
-##### * _Consider categorizing Calories Burned per Hour into 4 levels: {0: Sedentary, 1: LightlyActive, 2: FairlyActive, 3: VeryActive}_
+    * _Consider categorizing Calories Burned per Hour into 4 levels: {0: Sedentary, 1: LightlyActive, 2: FairlyActive, 3: VeryActive}_
     * After summarizing participants from dailyActivities, select a couple from each intensity level and consider plotting weekly/monthly calorie progression, possible pattern might be inciteful. Maybe create workout track for different life/work/school/parent schedules, short high intensity workouts or long low intensity work outs - personalization will likely be marketing point.
 * **hourlySteps, hourlyIntensities**:
     
